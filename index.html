@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dev Roadmap — Jun 29 – Jul 30</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+:root {
+  --bg:#05070f;--bg2:#080b15;--surface:#0d1117;--card:#0f1420;--card2:#131825;
+  --border:#1a2035;--border2:#222840;--accent:#4f8ef7;--accent2:#9b6dff;
+  --green:#00e5a0;--orange:#ff8c42;--pink:#ff5fa0;--yellow:#ffc94a;--red:#ff5252;
+  --cyan:#00d4ff;--teal:#00b8a9;--text:#dce6f5;--text2:#8899bb;--muted:#4a5568;
+  --java:#4f8ef7;--math:#00d4ff;--dsa:#00e5a0;--pattern:#ff5252;--sql:#d946ef;
+  --revision:#ffc94a;--work:#ff8c42;--web:#9b6dff;--prevweb:#6d4fff;
+  --english:#ff5fa0;--lunch:#fbbf24;--refresh:#22d3ee;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;overflow-x:hidden;}
+#bgCanvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;opacity:.35;pointer-events:none;}
+.page-wrap{position:relative;z-index:1;}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:1000;background:rgba(5,7,15,.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:56px;gap:12px;}
+.nav-logo{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;color:var(--accent);letter-spacing:1px;white-space:nowrap;}
+.nav-tabs{display:flex;gap:4px;}
+.nav-tab{padding:6px 14px;border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;color:var(--text2);transition:all .2s;border:none;background:none;}
+.nav-tab:hover,.nav-tab.active{background:var(--border);color:var(--text);}
+.nav-right{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.streak-badge{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:600;background:rgba(255,140,66,.12);border:1px solid rgba(255,140,66,.3);color:var(--orange);padding:4px 10px;border-radius:20px;white-space:nowrap;}
+.reset-btn{font-size:11px;background:rgba(255,82,82,.1);border:1px solid rgba(255,82,82,.25);color:var(--red);padding:4px 12px;border-radius:8px;cursor:pointer;font-family:'JetBrains Mono',monospace;transition:all .2s;}
+.reset-btn:hover{background:rgba(255,82,82,.2);}
+
+/* SYNC PILL */
+.sync-pill{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:500;padding:4px 10px;border-radius:20px;border:1px solid;white-space:nowrap;transition:all .3s;}
+.sync-pill.idle{background:rgba(34,211,238,.08);border-color:rgba(34,211,238,.25);color:var(--refresh);}
+.sync-pill.syncing{background:rgba(255,201,74,.08);border-color:rgba(255,201,74,.3);color:var(--yellow);}
+.sync-pill.synced{background:rgba(0,229,160,.08);border-color:rgba(0,229,160,.3);color:var(--green);}
+.sync-pill.error{background:rgba(255,82,82,.08);border-color:rgba(255,82,82,.3);color:var(--red);}
+.sync-dot{width:6px;height:6px;border-radius:50%;background:currentColor;}
+.sync-dot.pulse{animation:pulse 1.5s infinite;}
+
+/* HERO */
+.hero{min-height:440px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 24px 50px;text-align:center;position:relative;overflow:hidden;}
+.hero-glow{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:800px;height:500px;background:radial-gradient(ellipse,rgba(79,142,247,.08) 0%,rgba(155,109,255,.05) 40%,transparent 70%);pointer-events:none;}
+.hero-eyebrow{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:4px;text-transform:uppercase;color:var(--accent);margin-bottom:20px;opacity:0;animation:fadeUp .6s .1s forwards;}
+.hero h1{font-size:clamp(36px,7vw,72px);font-weight:900;line-height:1.0;letter-spacing:-2px;margin-bottom:16px;opacity:0;animation:fadeUp .6s .2s forwards;}
+.hero h1 span.g1{background:linear-gradient(90deg,#fff 0%,var(--accent) 60%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.hero h1 span.g2{background:linear-gradient(90deg,var(--accent2) 0%,var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.hero-sub{font-size:15px;color:var(--text2);max-width:520px;line-height:1.6;margin-bottom:36px;opacity:0;animation:fadeUp .6s .3s forwards;}
+.progress-ring-wrap{display:flex;flex-direction:column;align-items:center;gap:12px;opacity:0;animation:fadeUp .6s .4s forwards;margin-bottom:36px;}
+.ring-container{position:relative;width:120px;height:120px;}
+.ring-svg{transform:rotate(-90deg);}
+.ring-bg{fill:none;stroke:var(--border);stroke-width:8;}
+.ring-progress{fill:none;stroke-width:8;stroke-linecap:round;transition:stroke-dashoffset 1s cubic-bezier(.4,0,.2,1);}
+.ring-text{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;}
+.ring-pct{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;color:var(--text);display:block;}
+.ring-lbl{font-size:9px;color:var(--text2);text-transform:uppercase;letter-spacing:1px;}
+.ring-info{font-size:13px;color:var(--text2);font-family:'JetBrains Mono',monospace;}
+.stats-row{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;opacity:0;animation:fadeUp .6s .5s forwards;}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 20px;text-align:center;min-width:100px;position:relative;overflow:hidden;transition:transform .2s,box-shadow .2s;}
+.stat-card:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(79,142,247,.08);}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--stat-color,var(--accent));}
+.stat-num{font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:700;color:var(--stat-color,var(--accent));display:block;}
+.stat-lbl{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:1px;margin-top:3px;}
+
+/* SECTIONS */
+.section{padding:60px 24px;max-width:1200px;margin:0 auto;}
+.section-eyebrow{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:8px;}
+.section-title{font-size:28px;font-weight:800;letter-spacing:-.5px;margin-bottom:6px;}
+.section-sub{font-size:14px;color:var(--text2);margin-bottom:32px;}
+
+/* TECH */
+.tech-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;}
+.tech-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px 16px;transition:all .25s;cursor:default;position:relative;overflow:hidden;}
+.tech-card:hover{border-color:var(--tc,var(--border2));box-shadow:0 0 0 1px var(--tc,transparent),0 8px 30px rgba(0,0,0,.3);transform:translateY(-3px);}
+.tech-card::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at top left,var(--tc-bg,transparent) 0%,transparent 60%);pointer-events:none;}
+.tech-icon{font-size:28px;margin-bottom:10px;}.tech-name{font-weight:700;font-size:14px;margin-bottom:4px;}
+.tech-desc{font-size:11px;color:var(--text2);line-height:1.5;}
+.tech-tag{display:inline-block;margin-top:8px;font-size:9px;padding:2px 8px;border-radius:4px;font-weight:600;letter-spacing:1px;text-transform:uppercase;background:var(--tc-bg,var(--border));color:var(--tc,var(--text2));}
+
+/* ROADMAP */
+.roadmap{position:relative;padding-left:32px;}
+.roadmap::before{content:'';position:absolute;left:10px;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--accent),var(--accent2),var(--green),var(--red),var(--sql));}
+.rm-phase{position:relative;margin-bottom:32px;}
+.rm-dot{position:absolute;left:-27px;top:4px;width:14px;height:14px;border-radius:50%;border:2px solid;background:var(--bg);display:flex;align-items:center;justify-content:center;}
+.rm-dot::after{content:'';width:6px;height:6px;border-radius:50%;background:currentColor;}
+.rm-meta{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text2);margin-bottom:4px;letter-spacing:1px;}
+.rm-title{font-size:16px;font-weight:700;margin-bottom:4px;}
+.rm-desc{font-size:12px;color:var(--text2);line-height:1.5;}
+.rm-pills{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+.rm-pill{font-size:10px;padding:3px 10px;border-radius:20px;background:var(--border);color:var(--text2);font-weight:500;}
+
+/* SCHEDULE */
+.schedule-section{padding:0 0 60px;}
+.phase-header{padding:48px 24px 20px;max-width:1200px;margin:0 auto;display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+.phase-badge{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:5px 14px;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;border:1px solid;}
+.phase-title{font-size:26px;font-weight:800;letter-spacing:-.5px;}
+.phase-dates{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text2);margin-top:4px;}
+.phase-stats{display:flex;gap:10px;align-items:center;}
+.phase-stat{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 14px;text-align:center;}
+.phase-stat-num{font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700;display:block;}
+.phase-stat-lbl{font-size:9px;color:var(--text2);text-transform:uppercase;letter-spacing:1px;}
+.days-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;padding:0 24px;max-width:1200px;margin:0 auto;}
+
+/* DAY CARD */
+.day-card{background:var(--card);border:1px solid var(--border);border-radius:18px;overflow:hidden;transition:all .25s;animation:cardIn .5s both;}
+@keyframes cardIn{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+.day-card:hover{border-color:var(--border2);box-shadow:0 12px 48px rgba(0,0,0,.4);}
+.day-card.all-done{border-color:rgba(0,229,160,.4)!important;box-shadow:0 0 32px rgba(0,229,160,.08)!important;}
+.day-header{padding:16px 18px 14px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;position:relative;}
+.day-header-bar{position:absolute;bottom:0;left:0;height:2px;transition:width .5s ease;}
+.day-name{font-weight:800;font-size:15px;}
+.day-date{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text2);margin-top:2px;}
+.day-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;}
+.day-progress-badge{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;padding:3px 9px;border-radius:6px;background:rgba(79,142,247,.1);color:var(--accent);}
+.day-mini-bar{width:60px;height:4px;background:var(--border);border-radius:2px;overflow:hidden;}
+.day-mini-fill{height:100%;border-radius:2px;transition:width .4s ease;}
+.slots{padding:8px 0;}
+.slot{display:flex;align-items:center;gap:10px;padding:8px 16px;cursor:pointer;transition:background .12s;user-select:none;}
+.slot:hover{background:rgba(255,255,255,.025);}
+.slot.done .slot-label{opacity:.35;text-decoration:line-through;text-decoration-color:rgba(255,255,255,.2);}
+.slot.done .slot-tick{background:var(--green)!important;border-color:var(--green)!important;color:#05070f;}
+.slot-time{font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--muted);width:44px;flex-shrink:0;}
+.slot-bar{width:3px;border-radius:2px;flex-shrink:0;align-self:stretch;min-height:24px;}
+.slot-label{font-size:12.5px;line-height:1.4;flex:1;transition:opacity .2s;}
+.slot-tick{width:22px;height:22px;border-radius:7px;border:2px solid var(--border2);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s cubic-bezier(.34,1.56,.64,1);}
+.slot:hover .slot-tick{border-color:var(--green);}
+.complete-all-btn{margin:0 18px 12px;width:calc(100% - 36px);padding:8px;border-radius:10px;border:1px solid var(--border2);background:transparent;color:var(--text2);font-size:11px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s;letter-spacing:.5px;}
+.complete-all-btn:hover{background:rgba(0,229,160,.08);border-color:var(--green);color:var(--green);}
+
+/* LEGEND */
+.legend-bar{background:rgba(5,7,15,.9);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;position:sticky;top:56px;z-index:99;}
+.leg-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text2);white-space:nowrap;}
+.leg-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0;}
+.phase-sep{max-width:1200px;margin:0 auto;padding:0 24px;height:1px;background:linear-gradient(to right,transparent,var(--border),transparent);}
+
+/* ANALYTICS */
+.analytics-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+@media(max-width:700px){.analytics-grid{grid-template-columns:1fr;}}
+.chart-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;}
+.chart-title{font-size:14px;font-weight:700;margin-bottom:4px;}
+.chart-sub{font-size:11px;color:var(--text2);margin-bottom:20px;}
+.hours-bars{display:flex;flex-direction:column;gap:10px;}
+.hbar{display:flex;align-items:center;gap:10px;}
+.hbar-label{font-size:11px;color:var(--text2);width:110px;flex-shrink:0;display:flex;align-items:center;gap:6px;}
+.hbar-dot{width:7px;height:7px;border-radius:2px;flex-shrink:0;}
+.hbar-track{flex:1;height:8px;background:var(--border);border-radius:4px;overflow:hidden;}
+.hbar-fill{height:100%;border-radius:4px;transition:width 1.2s cubic-bezier(.4,0,.2,1);}
+.hbar-val{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text2);width:30px;text-align:right;}
+.moto-banner{background:linear-gradient(135deg,rgba(79,142,247,.08),rgba(155,109,255,.08));border:1px solid rgba(79,142,247,.2);border-radius:16px;padding:24px 28px;text-align:center;margin-top:20px;}
+.moto-text{font-size:clamp(16px,3vw,22px);font-weight:700;line-height:1.4;letter-spacing:-.3px;}
+.moto-text span{color:var(--accent);}
+
+/* BACKUP TAB */
+.gh-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:16px;}
+.gh-section-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text2);font-family:'JetBrains Mono',monospace;}
+.gh-input{width:100%;background:var(--surface);border:1px solid var(--border2);border-radius:10px;padding:10px 14px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:12px;outline:none;transition:border-color .2s;}
+.gh-input::placeholder{color:var(--muted);}
+.gh-input:focus{border-color:var(--accent);}
+.gh-btn-row{display:flex;gap:10px;flex-wrap:wrap;}
+.gh-btn{flex:1;min-width:120px;background:var(--card2);border:1px solid var(--border2);border-radius:10px;padding:10px 16px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;}
+.gh-btn:hover{border-color:var(--accent);color:var(--accent);background:rgba(79,142,247,.08);}
+.gh-btn.danger:hover{border-color:var(--red);color:var(--red);background:rgba(255,82,82,.08);}
+.gh-status-box{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text2);min-height:48px;line-height:1.7;}
+.gh-status-box.ok{border-color:rgba(0,229,160,.3);color:var(--green);}
+.gh-status-box.err{border-color:rgba(255,82,82,.3);color:var(--red);}
+.gh-note{font-size:12px;color:var(--text2);line-height:1.8;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;}
+.gh-note code{background:var(--card2);border:1px solid var(--border2);border-radius:4px;padding:1px 6px;font-family:'JetBrains Mono',monospace;color:var(--accent);font-size:11px;}
+.auto-sync-toggle{display:flex;align-items:center;justify-content:space-between;background:var(--surface);border:1px solid var(--border2);border-radius:10px;padding:12px 14px;gap:12px;}
+.toggle-info{font-size:12px;color:var(--text2);}
+.toggle-info strong{color:var(--text);font-weight:600;display:block;margin-bottom:2px;}
+.toggle-switch{position:relative;width:40px;height:22px;cursor:pointer;flex-shrink:0;}
+.toggle-switch input{opacity:0;width:0;height:0;}
+.toggle-slider{position:absolute;inset:0;background:var(--border2);border-radius:11px;transition:.3s;}
+.toggle-slider::before{content:'';position:absolute;width:16px;height:16px;left:3px;top:3px;background:var(--text2);border-radius:50%;transition:.3s;}
+.toggle-switch input:checked+.toggle-slider{background:var(--green);}
+.toggle-switch input:checked+.toggle-slider::before{transform:translateX(18px);background:#05070f;}
+.gist-id-display{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--accent);background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:8px 12px;cursor:pointer;transition:all .2s;word-break:break-all;}
+.gist-id-display:hover{border-color:var(--accent);}
+.restore-banner{background:linear-gradient(135deg,rgba(0,229,160,.08),rgba(79,142,247,.08));border:1px solid rgba(0,229,160,.3);border-radius:12px;padding:14px 18px;margin:0 24px 20px;max-width:1152px;margin-left:auto;margin-right:auto;display:none;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+.restore-banner.show{display:flex;}
+.restore-banner-text{font-size:13px;color:var(--green);font-weight:500;}
+.restore-close{font-size:11px;color:var(--text2);cursor:pointer;background:none;border:none;padding:4px 8px;border-radius:6px;transition:background .2s;}
+.restore-close:hover{background:var(--border);}
+
+/* ANIMATIONS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;display:inline-block;}
+.confetti-particle{position:fixed;width:8px;height:8px;border-radius:2px;pointer-events:none;z-index:9999;animation:confettiFall 1.2s forwards;}
+@keyframes confettiFall{0%{transform:translateY(0) rotate(0deg);opacity:1;}100%{transform:translateY(200px) rotate(720deg);opacity:0;}}
+.tab-panel{display:none;}.tab-panel.active{display:block;}
+#scrollTop{position:fixed;bottom:24px;right:24px;width:40px;height:40px;border-radius:12px;background:var(--card);border:1px solid var(--border2);color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;z-index:500;opacity:0;transition:all .3s;pointer-events:none;}
+#scrollTop.show{opacity:1;pointer-events:all;}
+.tooltip{position:relative;}
+.tooltip::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:#1a2035;color:var(--text);font-size:10px;padding:4px 8px;border-radius:6px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .15s;border:1px solid var(--border2);}
+.tooltip:hover::after{opacity:1;}
+@media(max-width:600px){
+  .days-grid{grid-template-columns:1fr;padding:0 12px;}
+  .phase-header{padding:36px 12px 16px;}
+  .section{padding:40px 12px;}
+  nav .nav-tabs{display:none;}
+}
+</style>
+</head>
+<body>
+<canvas id="bgCanvas"></canvas>
+<div class="page-wrap">
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">⬡ DEV.ROADMAP</div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="switchTab('schedule')">📅 Schedule</button>
+    <button class="nav-tab" onclick="switchTab('techstack')">🛠 Tech Stack</button>
+    <button class="nav-tab" onclick="switchTab('analytics')">📊 Analytics</button>
+    <button class="nav-tab" onclick="switchTab('backup')">☁ Backup</button>
+  </div>
+  <div class="nav-right">
+    <div class="sync-pill idle" id="syncPill"><div class="sync-dot" id="syncDot"></div><span id="syncLabel">Not connected</span></div>
+    <div class="streak-badge">🔥 <span id="streakVal">0</span> day streak</div>
+    <button class="reset-btn" onclick="confirmReset()">reset</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-eyebrow"><span class="live-dot"></span> &nbsp; Jun 29 – Jul 30, 2025 &nbsp;·&nbsp; 32 Days</div>
+  <h1><span class="g1">Dev Mastery</span><br><span class="g2">Roadmap</span></h1>
+  <p class="hero-sub">Java → Math/DSA → Data Structures → Patterns → SQL<br>Every hour mapped. Every class tracked.</p>
+  <div class="progress-ring-wrap">
+    <div class="ring-container">
+      <svg class="ring-svg" width="120" height="120" viewBox="0 0 120 120">
+        <circle class="ring-bg" cx="60" cy="60" r="52"/>
+        <circle class="ring-progress" id="ringProgress" cx="60" cy="60" r="52" stroke="url(#ringGrad)" stroke-dasharray="326.7" stroke-dashoffset="326.7"/>
+        <defs><linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#4f8ef7"/><stop offset="100%" stop-color="#00e5a0"/></linearGradient></defs>
+      </svg>
+      <div class="ring-text"><span class="ring-pct" id="ringPct">0%</span><span class="ring-lbl">done</span></div>
+    </div>
+    <div class="ring-info" id="ringInfo">0 / 0 tasks</div>
+  </div>
+  <div class="stats-row">
+    <div class="stat-card tooltip" data-tip="Daily study hours" style="--stat-color:var(--java)"><span class="stat-num">~12h</span><div class="stat-lbl">Study / Day</div></div>
+    <div class="stat-card tooltip" data-tip="5am–11pm schedule" style="--stat-color:var(--refresh)"><span class="stat-num">6h</span><div class="stat-lbl">Sleep</div></div>
+    <div class="stat-card tooltip" data-tip="Work for money blocks" style="--stat-color:var(--orange)"><span class="stat-num">3h</span><div class="stat-lbl">Work</div></div>
+    <div class="stat-card tooltip" data-tip="Daily web class" style="--stat-color:var(--web)"><span class="stat-num">1h</span><div class="stat-lbl">Web Class</div></div>
+    <div class="stat-card tooltip" data-tip="Java classes covered" style="--stat-color:var(--java)"><span class="stat-num">21</span><div class="stat-lbl">Java Cls</div></div>
+    <div class="stat-card tooltip" data-tip="DSA classes" style="--stat-color:var(--dsa)"><span class="stat-num">21</span><div class="stat-lbl">DSA Cls</div></div>
+    <div class="stat-card tooltip" data-tip="SQL topics" style="--stat-color:var(--sql)"><span class="stat-num">15</span><div class="stat-lbl">SQL Topics</div></div>
+    <div class="stat-card tooltip" data-tip="Patterns identified" style="--stat-color:var(--pattern)"><span class="stat-num">15</span><div class="stat-lbl">Patterns</div></div>
+  </div>
+</div>
+
+<!-- LEGEND -->
+<div class="legend-bar">
+  <div class="leg-item"><div class="leg-dot" style="background:var(--refresh)"></div>Refresh</div>
+  <div class="leg-item"><div class="leg-dot" style="background:var(--java)"></div>Java</div>
+  <div class="leg-item"><div class="leg-dot" style="background:var(--math)"></div>Math/DSA</div>
+  <div class="leg-item"><div class="leg-dot" style="background:var(--dsa)"></div>DSA</div>
+  <div class="leg-item"><div class="leg-dot" style="background:var(--pattern)"></div>Patterns</div>
+  <div class="leg-item"><div class="leg-dot" style="background:var(--sql)"></div>SQL</div>
+  <div class="leg-item"><div class="leg-dot" style="background:var(--revision)"></div>Revision</div>
+  <div class="leg-item"><div class="leg-dot" style="background:var(--work)"></div>Work</div>
+  <div class="leg-item"><div class="leg-dot" style="background:var(--web)"></div>Web Class</div>
+  <div class="leg-item"><div class="leg-dot" style="background:var(--prevweb)"></div>Prev Web Notes</div>
+  <div class="leg-item"><div class="leg-dot" style="background:var(--english)"></div>English</div>
+  <div class="leg-item"><div class="leg-dot" style="background:var(--lunch)"></div>Lunch</div>
+</div>
+
+<!-- RESTORE BANNER -->
+<div class="restore-banner" id="restoreBanner">
+  <div class="restore-banner-text" id="restoreBannerText">☁ Progress restored from GitHub backup</div>
+  <button class="restore-close" onclick="document.getElementById('restoreBanner').classList.remove('show')">✕ dismiss</button>
+</div>
+
+<!-- TAB: SCHEDULE -->
+<div class="tab-panel active" id="tab-schedule">
+  <div class="schedule-section" id="schedule"></div>
+</div>
+
+<!-- TAB: TECH STACK -->
+<div class="tab-panel" id="tab-techstack">
+  <div class="section">
+    <div class="section-eyebrow">Technologies</div>
+    <div class="section-title">Full Tech Stack You're Learning</div>
+    <div class="section-sub">Everything covered in this 32-day roadmap + what to learn next</div>
+    <div class="tech-grid">
+      <div class="tech-card" style="--tc:#4f8ef7;--tc-bg:rgba(79,142,247,0.06)"><div class="tech-icon">☕</div><div class="tech-name">Java</div><div class="tech-desc">Core programming language. OOP, Collections, Generics, Streams, multithreading.</div><span class="tech-tag" style="--tc:#4f8ef7;--tc-bg:rgba(79,142,247,0.12)">Phase 1 · 8 days</span></div>
+      <div class="tech-card" style="--tc:#00d4ff;--tc-bg:rgba(0,212,255,0.06)"><div class="tech-icon">📐</div><div class="tech-name">Math for DSA</div><div class="tech-desc">Number theory, modular arithmetic, combinatorics, bit manipulation, logarithms.</div><span class="tech-tag" style="--tc:#00d4ff;--tc-bg:rgba(0,212,255,0.12)">Phase 2 · 4 days</span></div>
+      <div class="tech-card" style="--tc:#00e5a0;--tc-bg:rgba(0,229,160,0.06)"><div class="tech-icon">🌲</div><div class="tech-name">Data Structures</div><div class="tech-desc">Arrays, LinkedList, Stack, Queue, Trees, Graphs, Heaps, Tries.</div><span class="tech-tag" style="--tc:#00e5a0;--tc-bg:rgba(0,229,160,0.12)">Phase 3 · 10 days</span></div>
+      <div class="tech-card" style="--tc:#ff5252;--tc-bg:rgba(255,82,82,0.06)"><div class="tech-icon">🧩</div><div class="tech-name">DSA Patterns</div><div class="tech-desc">Sliding window, two pointers, fast/slow, merge intervals, cyclic sort, backtracking.</div><span class="tech-tag" style="--tc:#ff5252;--tc-bg:rgba(255,82,82,0.12)">Phase 4 · 4 days</span></div>
+      <div class="tech-card" style="--tc:#d946ef;--tc-bg:rgba(217,70,239,0.06)"><div class="tech-icon">🗃</div><div class="tech-name">SQL</div><div class="tech-desc">SELECT, JOINs, subqueries, window functions, indexes, stored procedures.</div><span class="tech-tag" style="--tc:#d946ef;--tc-bg:rgba(217,70,239,0.12)">Phase 5 · 5 days</span></div>
+      <div class="tech-card" style="--tc:#9b6dff;--tc-bg:rgba(155,109,255,0.06)"><div class="tech-icon">🌐</div><div class="tech-name">Web Development</div><div class="tech-desc">Daily 7–8 PM web class. HTML, CSS, JavaScript, frameworks (ongoing).</div><span class="tech-tag" style="--tc:#9b6dff;--tc-bg:rgba(155,109,255,0.12)">Every Day · 1h/day</span></div>
+      <div class="tech-card" style="--tc:#ffc94a;--tc-bg:rgba(255,201,74,0.06)"><div class="tech-icon">⚡</div><div class="tech-name">Algorithms</div><div class="tech-desc">Sorting, searching, dynamic programming, greedy, divide and conquer, recursion.</div><span class="tech-tag" style="--tc:#ffc94a;--tc-bg:rgba(255,201,74,0.12)">Ongoing · DSA phase</span></div>
+      <div class="tech-card" style="--tc:#00b8a9;--tc-bg:rgba(0,184,169,0.06)"><div class="tech-icon">🔣</div><div class="tech-name">Logic Building</div><div class="tech-desc">Loop patterns, nested logic, problem decomposition, pseudocode to code.</div><span class="tech-tag" style="--tc:#00b8a9;--tc-bg:rgba(0,184,169,0.12)">Phase 2 · Sat 11 Jul</span></div>
+    </div>
+    <div style="height:48px"></div>
+    <div class="section-eyebrow">Next Steps</div>
+    <div class="section-title">Recommended After This Roadmap</div>
+    <div class="section-sub">Stack to build once Java + DSA + SQL foundation is solid</div>
+    <div class="tech-grid">
+      <div class="tech-card" style="--tc:#ff8c42;--tc-bg:rgba(255,140,66,0.05)"><div class="tech-icon">🍃</div><div class="tech-name">Spring Boot</div><div class="tech-desc">Build REST APIs with Java. Dependency injection, JPA, Security.</div><span class="tech-tag">Next up</span></div>
+      <div class="tech-card" style="--tc:#336791;--tc-bg:rgba(51,103,145,0.06)"><div class="tech-icon">🐘</div><div class="tech-name">PostgreSQL</div><div class="tech-desc">Advanced SQL, relational modeling, performance tuning.</div><span class="tech-tag">After SQL</span></div>
+      <div class="tech-card" style="--tc:#61dafb;--tc-bg:rgba(97,218,251,0.05)"><div class="tech-icon">⚛️</div><div class="tech-name">React</div><div class="tech-desc">Frontend framework. State, hooks, routing, component design.</div><span class="tech-tag">After Web cls</span></div>
+      <div class="tech-card" style="--tc:#f05033;--tc-bg:rgba(240,80,51,0.05)"><div class="tech-icon">📦</div><div class="tech-name">Git &amp; GitHub</div><div class="tech-desc">Version control, branching, PRs — essential for all projects.</div><span class="tech-tag">Start now</span></div>
+    </div>
+    <div style="height:48px"></div>
+    <div class="section-eyebrow">32-Day Journey</div>
+    <div class="section-title">Phase Roadmap</div>
+    <div class="section-sub">How each phase builds on the last</div>
+    <div class="roadmap">
+      <div class="rm-phase"><div class="rm-dot" style="color:var(--java);border-color:var(--java)"></div><div class="rm-meta">MON 29 JUN – MON 6 JUL · 8 DAYS</div><div class="rm-title" style="color:var(--java)">Phase 1 — Java Core</div><div class="rm-desc">21 classes covering the full Java language. Notes, understanding, and hands-on practical every day.</div><div class="rm-pills"><span class="rm-pill">Classes 1–21</span><span class="rm-pill">Note + Understand</span><span class="rm-pill">Practical</span></div></div>
+      <div class="rm-phase"><div class="rm-dot" style="color:var(--math);border-color:var(--math)"></div><div class="rm-meta">WED 8 JUL – SAT 11 JUL · 4 DAYS</div><div class="rm-title" style="color:var(--math)">Phase 2 — Math for DSA + Logic</div><div class="rm-desc">Thanish and TUF resources for mathematical foundations. Logic building with loop patterns.</div><div class="rm-pills"><span class="rm-pill">Thanish 1–5</span><span class="rm-pill">TUF 1–3</span><span class="rm-pill">Loop Logic PDF</span></div></div>
+      <div class="rm-phase"><div class="rm-dot" style="color:var(--dsa);border-color:var(--dsa)"></div><div class="rm-meta">SUN 12 JUL – TUE 21 JUL · 10 DAYS</div><div class="rm-title" style="color:var(--dsa)">Phase 3 — DSA Deep Dive</div><div class="rm-desc">21 DSA classes with theory and practical. Two full revision days at the end.</div><div class="rm-pills"><span class="rm-pill">Classes 1–21</span><span class="rm-pill">Practical</span><span class="rm-pill">2-Day Revision</span></div></div>
+      <div class="rm-phase"><div class="rm-dot" style="color:var(--pattern);border-color:var(--pattern)"></div><div class="rm-meta">WED 22 JUL – SAT 25 JUL · 4 DAYS</div><div class="rm-title" style="color:var(--pattern)">Phase 4 — Pattern Identification</div><div class="rm-desc">15 patterns for competitive programming and interviews.</div><div class="rm-pills"><span class="rm-pill">Patterns 1–15</span><span class="rm-pill">Full Revision</span></div></div>
+      <div class="rm-phase"><div class="rm-dot" style="color:var(--sql);border-color:var(--sql)"></div><div class="rm-meta">SUN 26 JUL – THU 30 JUL · 5 DAYS</div><div class="rm-title" style="color:var(--sql)">Phase 5 — SQL + DSA Practical</div><div class="rm-desc">15 SQL topics while continuing DSA daily practical sessions.</div><div class="rm-pills"><span class="rm-pill">SQL 1–15</span><span class="rm-pill">DSA Practice</span></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB: ANALYTICS -->
+<div class="tab-panel" id="tab-analytics">
+  <div class="section">
+    <div class="section-eyebrow">Analytics</div>
+    <div class="section-title">Your Daily Time Breakdown</div>
+    <div class="section-sub">How each hour is allocated across a typical day</div>
+    <div class="analytics-grid">
+      <div class="chart-card"><div class="chart-title">Time per Activity (Daily Avg)</div><div class="chart-sub">Hours per category on a typical weekday</div><canvas id="donutChart" height="220"></canvas></div>
+      <div class="chart-card"><div class="chart-title">Phase Duration</div><div class="chart-sub">Days dedicated to each learning phase</div><canvas id="barChart" height="220"></canvas></div>
+      <div class="chart-card" style="grid-column:1/-1"><div class="chart-title">Hours Breakdown</div><div class="chart-sub">Detailed daily time allocation</div>
+        <div class="hours-bars">
+          <div class="hbar"><div class="hbar-label"><div class="hbar-dot" style="background:var(--java)"></div>Core Study</div><div class="hbar-track"><div class="hbar-fill" style="background:var(--java);width:0%" data-w="66"></div></div><div class="hbar-val">8h</div></div>
+          <div class="hbar"><div class="hbar-label"><div class="hbar-dot" style="background:var(--refresh)"></div>Refresh breaks</div><div class="hbar-track"><div class="hbar-fill" style="background:var(--refresh);width:0%" data-w="17"></div></div><div class="hbar-val">2h</div></div>
+          <div class="hbar"><div class="hbar-label"><div class="hbar-dot" style="background:var(--work)"></div>Work for money</div><div class="hbar-track"><div class="hbar-fill" style="background:var(--work);width:0%" data-w="25"></div></div><div class="hbar-val">3h</div></div>
+          <div class="hbar"><div class="hbar-label"><div class="hbar-dot" style="background:var(--web)"></div>Web class</div><div class="hbar-track"><div class="hbar-fill" style="background:var(--web);width:0%" data-w="8"></div></div><div class="hbar-val">1h</div></div>
+          <div class="hbar"><div class="hbar-label"><div class="hbar-dot" style="background:var(--prevweb)"></div>Prev web notes</div><div class="hbar-track"><div class="hbar-fill" style="background:var(--prevweb);width:0%" data-w="8"></div></div><div class="hbar-val">1h</div></div>
+          <div class="hbar"><div class="hbar-label"><div class="hbar-dot" style="background:var(--lunch)"></div>Lunch</div><div class="hbar-track"><div class="hbar-fill" style="background:var(--lunch);width:0%" data-w="8"></div></div><div class="hbar-val">1h</div></div>
+          <div class="hbar"><div class="hbar-label"><div class="hbar-dot" style="background:var(--english)"></div>English (Sat/Sun)</div><div class="hbar-track"><div class="hbar-fill" style="background:var(--english);width:0%" data-w="8"></div></div><div class="hbar-val">1h</div></div>
+          <div class="hbar"><div class="hbar-label"><div class="hbar-dot" style="background:var(--muted)"></div>Sleep (11pm–5am)</div><div class="hbar-track"><div class="hbar-fill" style="background:var(--muted);width:0%" data-w="50"></div></div><div class="hbar-val">6h</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="moto-banner" style="margin-top:24px"><div class="moto-text">You're investing <span>~360 hours</span> of pure learning in 32 days.<br>That's the same hours most people spend in <span>3 semesters</span> of college.</div></div>
+  </div>
+</div>
+
+<!-- TAB: BACKUP -->
+<div class="tab-panel" id="tab-backup">
+  <div class="section" style="max-width:720px">
+    <div class="section-eyebrow">Cloud Sync</div>
+    <div class="section-title">GitHub Cloud Backup</div>
+    <div class="section-sub">Every tick is auto-saved to GitHub — survives resets, browser clears, and new devices</div>
+
+    <div class="gh-card">
+      <div>
+        <div class="gh-section-label" style="margin-bottom:8px">Step 1 — Your GitHub Token</div>
+        <input type="password" id="ghToken" class="gh-input" placeholder="ghp_your_personal_access_token" autocomplete="off" oninput="onTokenInput()">
+      </div>
+      <div>
+        <div class="gh-section-label" style="margin-bottom:8px">Step 2 — Gist ID (auto-filled after first push)</div>
+        <input type="text" id="ghGistId" class="gh-input" placeholder="Paste Gist ID here to restore on a new device" oninput="onGistIdInput()">
+      </div>
+      <div>
+        <div class="gh-section-label" style="margin-bottom:8px">Step 3 — Auto-Sync on every tick</div>
+        <div class="auto-sync-toggle">
+          <div class="toggle-info">
+            <strong>Enable Auto-Sync</strong>
+            Automatically push to GitHub 2 seconds after every checkbox tick or untick
+          </div>
+          <label class="toggle-switch"><input type="checkbox" id="autoSyncToggle" onchange="onAutoSyncChange()"><span class="toggle-slider"></span></label>
+        </div>
+      </div>
+      <div>
+        <div class="gh-section-label" style="margin-bottom:8px">Manual Controls</div>
+        <div class="gh-btn-row">
+          <button class="gh-btn" onclick="pushBackup(true)">↑ Push Now</button>
+          <button class="gh-btn" onclick="restoreBackup()">↓ Restore from Gist</button>
+          <button class="gh-btn danger" onclick="confirmResetWithBackup()">⚠ Reset + Wipe Backup</button>
+        </div>
+      </div>
+      <div class="gh-status-box" id="ghStatus">Enter your token above, then enable Auto-Sync to get started.</div>
+      <div id="gistIdSection" style="display:none">
+        <div class="gh-section-label" style="margin-bottom:6px">Your Gist ID — click to copy</div>
+        <div class="gist-id-display" id="gistIdDisplay" onclick="copyGistId()">—</div>
+      </div>
+    </div>
+
+    <div class="gh-note" style="margin-top:16px">
+      <strong style="color:var(--text);display:block;margin-bottom:10px">How to set up (2 minutes)</strong>
+      1. Go to <code>github.com/settings/tokens</code> → Generate new token (classic) → tick only the <code>gist</code> scope → copy it.<br>
+      2. Paste your token in Step 1 above.<br>
+      3. Enable Auto-Sync in Step 3 — a private Gist is created on your first tick.<br>
+      4. Save the Gist ID shown below for use on other devices.<br><br>
+      <strong style="color:var(--green)">Reset is now safe:</strong> Your GitHub backup is never touched by the local Reset button. After a reset, just hit "Restore from Gist" to get everything back instantly. Auto-Sync also restores automatically if GitHub has more progress than your local browser on page load.
+    </div>
+  </div>
+</div>
+
+<button id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+</div>
+
+<script>
+// ANIMATED BG
+const canvas=document.getElementById('bgCanvas'),ctx=canvas.getContext('2d');
+let particles=[];
+function resizeCanvas(){canvas.width=innerWidth;canvas.height=innerHeight;}
+resizeCanvas();window.addEventListener('resize',resizeCanvas);
+for(let i=0;i<60;i++)particles.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,r:Math.random()*1.5+.5,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,alpha:Math.random()*.5+.1});
+function animateBg(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  particles.forEach(p=>{
+    p.x+=p.vx;p.y+=p.vy;
+    if(p.x<0)p.x=canvas.width;if(p.x>canvas.width)p.x=0;
+    if(p.y<0)p.y=canvas.height;if(p.y>canvas.height)p.y=0;
+    ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=`rgba(79,142,247,${p.alpha})`;ctx.fill();
+  });
+  for(let i=0;i<particles.length;i++)for(let j=i+1;j<particles.length;j++){
+    const dx=particles[i].x-particles[j].x,dy=particles[i].y-particles[j].y,d=Math.sqrt(dx*dx+dy*dy);
+    if(d<120){ctx.beginPath();ctx.moveTo(particles[i].x,particles[i].y);ctx.lineTo(particles[j].x,particles[j].y);ctx.strokeStyle=`rgba(79,142,247,${.08*(1-d/120)})`;ctx.lineWidth=.5;ctx.stroke();}
+  }
+  requestAnimationFrame(animateBg);
+}
+animateBg();
+
+// DATA
+const C={refresh:'refresh',java:'java',work:'work',web:'web',prevweb:'prevweb',lunch:'lunch',english:'english',math:'math',dsa:'dsa',pattern:'pattern',sql:'sql',revision:'revision'};
+function s(t,l,c){return{time:t,label:l,cat:c};}
+const stdEnd=[s('4–7','Work for money',C.work),s('7–8','Web class',C.web),s('8–9','Previous web cls notes',C.prevweb)];
+const phases=[
+  {label:'Phase 1',title:'Java — Notes, Understanding & Practical',dates:'Mon 29 Jun – Mon 6 Jul',color:'#4f8ef7',icon:'☕',days:[
+    {name:'Monday',date:'29 Jun',slots:[s('5–6','Refresh',C.refresh),s('6–8','Java Cls 1 Note + Understanding',C.java),s('8–9','Refresh',C.refresh),s('9–11','Java Cls 1 Practical',C.java),s('11–1','Java Cls 2 Note + Understanding',C.java),s('1–3','Java Cls 2 Practical',C.java),s('3–4','Lunch',C.lunch),...stdEnd,s('9–11','Java Cls 3 Note + Understanding',C.java)]},
+    {name:'Tuesday',date:'30 Jun',slots:[s('5–6','Refresh',C.refresh),s('6–8','Java Cls 3 Practical',C.java),s('8–9','Refresh',C.refresh),s('9–11','Java Cls 4 Note + Understanding',C.java),s('11–1','Java Cls 4 Practical',C.java),s('1–3','Java Cls 5 Note + Understanding',C.java),s('3–4','Lunch',C.lunch),...stdEnd,s('9–11','Java Cls 5 Practical',C.java)]},
+    {name:'Wednesday',date:'1 Jul',slots:[s('5–6','Refresh',C.refresh),s('6–8','Java Cls 6 Note + Understanding',C.java),s('8–9','Refresh',C.refresh),s('9–11','Java Cls 6 Practical',C.java),s('11–1','Java Cls 7 Note + Understanding',C.java),s('1–3','Java Cls 7 Practical',C.java),s('3–4','Lunch',C.lunch),...stdEnd,s('9–11','Java Cls 8 Note + Understanding',C.java)]},
+    {name:'Thursday',date:'2 Jul',slots:[s('5–6','Refresh',C.refresh),s('6–8','Java Cls 8 Practical',C.java),s('8–9','Refresh',C.refresh),s('9–11','Java Cls 9 Note + Understanding',C.java),s('11–1','Java Cls 9 Practical',C.java),s('1–3','Java Cls 10 Note + Understanding',C.java),s('3–4','Lunch',C.lunch),...stdEnd,s('9–11','Java Cls 11 Practical',C.java)]},
+    {name:'Friday',date:'3 Jul',slots:[s('5–6','Refresh',C.refresh),s('6–8','Java Cls 12 Note + Understanding',C.java),s('8–9','Refresh',C.refresh),s('9–11','Java Cls 12 Practical',C.java),s('11–1','Java Cls 13 Note + Understanding',C.java),s('1–3','Java Cls 13 Practical',C.java),s('3–4','Lunch',C.lunch),...stdEnd,s('9–11','Java Cls 14 Note + Understanding',C.java)]},
+    {name:'Saturday',date:'4 Jul',slots:[s('5–6','Refresh',C.refresh),s('6–8','Java Cls 14 Practical',C.java),s('8–9','Refresh',C.refresh),s('9–11','Java Cls 15 Note + Understanding',C.java),s('11–1','Java Cls 15 Practical',C.java),s('1–3','Java Cls 16 Note + Understanding',C.java),s('3–4','Lunch',C.lunch),s('4–5','English Class',C.english),s('5–7','Work for money',C.work),s('7–8','Web class',C.web),s('8–9','Previous web cls notes',C.prevweb),s('9–11','Java Cls 16 Practical',C.java)]},
+    {name:'Sunday',date:'5 Jul',slots:[s('5–6','Refresh',C.refresh),s('6–8','Java Cls 17 Note + Understanding',C.java),s('8–9','Refresh',C.refresh),s('9–11','Java Cls 17 Practical',C.java),s('11–1','Java Cls 18 Note + Understanding',C.java),s('1–3','Java Cls 18 Practical',C.java),s('3–4','Lunch',C.lunch),s('4–5','English Class',C.english),s('5–7','Work for money',C.work),s('7–8','Web class',C.web),s('8–9','Previous web cls notes',C.prevweb),s('9–11','Java Cls 19 Note + Understanding',C.java)]},
+    {name:'Monday',date:'6 Jul',slots:[s('5–6','Refresh',C.refresh),s('6–8','Java Cls 19 Practical',C.java),s('8–9','Refresh',C.refresh),s('9–11','Java Cls 20 Note + Understanding',C.java),s('11–1','Java Cls 20 Practical',C.java),s('1–3','Java Cls 21 Note + Understanding',C.java),s('3–4','Lunch',C.lunch),...stdEnd,s('9–11','Java Cls 21 Practical',C.java)]},
+  ]},
+  {label:'Phase 2',title:'Math for DSA + Logic Building',dates:'Wed 8 Jul – Sat 11 Jul',color:'#00d4ff',icon:'📐',days:[
+    {name:'Wednesday',date:'8 Jul',slots:[s('5–6','Refresh',C.refresh),s('6–8','Thanish Cls 1 Note + Understanding',C.math),s('8–9','Refresh',C.refresh),s('9–11','Thanish Cls 2 Note + Understanding',C.math),s('11–1','Revision: Thanish Cls 1+2',C.revision),s('1–3','Thanish Cls 3 Note + Understanding',C.math),s('3–4','Lunch',C.lunch),...stdEnd,s('9–11','Thanish Cls 4 Note + Understanding',C.math)]},
+    {name:'Thursday',date:'9 Jul',slots:[s('5–6','Refresh',C.refresh),s('6–8','Thanish Cls 5 Note + Understanding',C.math),s('8–9','Refresh',C.refresh),s('9–1','Thanish Full Revision',C.revision),s('1–3','TUF Cls 1 Note + Understanding',C.math),s('3–4','Lunch',C.lunch),...stdEnd,s('9–11','TUF Cls 2 Note + Understanding',C.math)]},
+    {name:'Friday',date:'10 Jul',slots:[s('5–6','Refresh',C.refresh),s('6–8','TUF Cls 3 Note + Understanding',C.math),s('8–9','Refresh',C.refresh),s('9–1','TUF Full Revision',C.revision),s('1–3','Math for DSA Full Revision',C.revision),s('3–4','Lunch',C.lunch),...stdEnd,s('9–11','Math for DSA Full Revision',C.revision)]},
+    {name:'Saturday',date:'11 Jul',slots:[s('5–6','Refresh',C.refresh),s('6–8','Logic Building with Loops PDF',C.math),s('8–9','Refresh',C.refresh),s('9–11','Logic Building with Loops PDF',C.math),s('11–1','Logic Building with Loops PDF',C.math),s('1–3','Logic Building with Loops PDF',C.math),s('3–4','Lunch',C.lunch),s('4–5','English Class',C.english),s('5–7','Work for money',C.work),s('7–8','Web class',C.web),s('8–9','Previous web cls notes',C.prevweb),s('9–11','Logic Building with Loops PDF',C.math)]},
+  ]},
+  {label:'Phase 3',title:'DSA — Notes, Understanding & Practical',dates:'Sun 12 Jul – Tue 21 Jul',color:'#00e5a0',icon:'🌲',days:[
+    {name:'Sunday',date:'12 Jul',slots:[s('5–6','Refresh',C.refresh),s('6–8','DSA Cls 1 Note + Understanding',C.dsa),s('8–9','Refresh',C.refresh),s('9–11','DSA Cls 1 Practical',C.dsa),s('11–1','DSA Cls 2 Note + Understanding',C.dsa),s('1–3','DSA Cls 2 Practical',C.dsa),s('3–4','Lunch',C.lunch),s('4–5','English Class',C.english),s('5–7','Work for money',C.work),s('7–8','Web class',C.web),s('8–9','Previous web cls notes',C.prevweb),s('9–11','DSA Cls 3 Note + Understanding',C.dsa)]},
+    {name:'Monday',date:'13 Jul',slots:[s('5–6','Refresh',C.refresh),s('6–8','DSA Cls 3 Practical',C.dsa),s('8–9','Refresh',C.refresh),s('9–11','DSA Cls 4 Note + Understanding',C.dsa),s('11–1','DSA Cls 4 Practical',C.dsa),s('1–3','DSA Cls 5 Note + Understanding',C.dsa),s('3–4','Lunch',C.lunch),...stdEnd,s('9–11','DSA Cls 5 Practical',C.dsa)]},
+    {name:'Tuesday',date:'14 Jul',slots:[s('5–6','Refresh',C.refresh),s('6–8','DSA Cls 6 Note + Understanding',C.dsa),s('8–9','Refresh',C.refresh),s('9–11','DSA Cls 6 Practical',C.dsa),s('11–1','DSA Cls 7 Note + Understanding',C.dsa),s('1–3','DSA Cls 7 Practical',C.dsa),s('3–4','Lunch',C.lunch),...stdEnd,s('9–11','DSA Cls 8 Note + Understanding',C.dsa)]},
+    {name:'Wednesday',date:'15 Jul',slots:[s('5–6','Refresh',C.refresh),s('6–8','DSA Cls 8 Practical',C.dsa),s('8–9','Refresh',C.refresh),s('9–11','DSA Cls 9 Note + Understanding',C.dsa),s('11–1','DSA Cls 9 Practical',C.dsa),s('1–3','DSA Cls 10 Note + Understanding',C.dsa),s('3–4','Lunch',C.lunch),...stdEnd,s('9–11','DSA Cls 10 Practical',C.dsa)]},
+    {name:'Thursday',date:'16 Jul',slots:[s('5–6','Refresh',C.refresh),s('6–8','DSA Cls 11 Note + Understanding',C.dsa),s('8–9','Refresh',C.refresh),s('9–11','DSA Cls 11 Practical',C.dsa),s('11–1','DSA Cls 12 Note + Understanding',C.dsa),s('1–3','DSA Cls 12 Practical',C.dsa),s('3–4','Lunch',C.lunch),...stdEnd,s('9–11','DSA Cls 13 Note + Understanding',C.dsa)]},
+    {name:'Friday',date:'17 Jul',slots:[s('5–6','Refresh',C.refresh),s('6–8','DSA Cls 13 Practical',C.dsa),s('8–9','Refresh',C.refresh),s('9–11','DSA Cls 14 Note + Understanding',C.dsa),s('11–1','DSA Cls 14 Practical',C.dsa),s('1–3','DSA Cls 15 Note + Understanding',C.dsa),s('3–4','Lunch',C.lunch),...stdEnd,s('9–11','DSA Cls 15 Practical',C.dsa)]},
+    {name:'Saturday',date:'18 Jul',slots:[s('5–6','Refresh',C.refresh),s('6–8','DSA Cls 16 Note + Understanding',C.dsa),s('8–9','Refresh',C.refresh),s('9–11','DSA Cls 16 Practical',C.dsa),s('11–1','DSA Cls 17 Note + Understanding',C.dsa),s('1–3','DSA Cls 17 Practical',C.dsa),s('3–4','Lunch',C.lunch),s('4–5','English Class',C.english),s('5–7','Work for money',C.work),s('7–8','Web class',C.web),s('8–9','Previous web cls notes',C.prevweb),s('9–11','DSA Cls 18 Note + Understanding',C.dsa)]},
+    {name:'Sunday',date:'19 Jul',slots:[s('5–6','Refresh',C.refresh),s('6–8','DSA Cls 18 Practical',C.dsa),s('8–9','Refresh',C.refresh),s('9–11','DSA Cls 19 Note + Understanding',C.dsa),s('11–1','DSA Cls 19 Practical',C.dsa),s('1–3','DSA Cls 20 Note + Understanding',C.dsa),s('3–4','Lunch',C.lunch),s('4–5','English Class',C.english),s('5–7','Work for money',C.work),s('7–8','Web class',C.web),s('8–9','Previous web cls notes',C.prevweb),s('9–11','DSA Cls 20 Practical',C.dsa)]},
+    {name:'Monday',date:'20 Jul',slots:[s('5–6','Refresh',C.refresh),s('6–8','DSA Cls 21 Note + Understanding',C.dsa),s('8–9','Refresh',C.refresh),s('9–11','DSA Cls 21 Practical',C.dsa),s('11–1','DSA Full Revision',C.revision),s('1–3','DSA Full Revision',C.revision),s('3–4','Lunch',C.lunch),...stdEnd,s('9–11','DSA Full Revision',C.revision)]},
+    {name:'Tuesday',date:'21 Jul',slots:[s('5–6','Refresh',C.refresh),s('6–8','DSA Full Revision',C.revision),s('8–9','Refresh',C.refresh),s('9–11','DSA Full Revision',C.revision),s('11–1','DSA Full Revision',C.revision),s('1–3','DSA Full Revision',C.revision),s('3–4','Lunch',C.lunch),...stdEnd,s('9–11','DSA Full Revision',C.revision)]},
+  ]},
+  {label:'Phase 4',title:'Pattern Identification',dates:'Wed 22 Jul – Sat 25 Jul',color:'#ff5252',icon:'🧩',days:[
+    {name:'Wednesday',date:'22 Jul',slots:[s('5–6','Refresh',C.refresh),s('6–8','Pattern 1 Note + Understanding',C.pattern),s('8–9','Refresh',C.refresh),s('9–11','Pattern 2 Note + Understanding',C.pattern),s('11–1','Pattern 3 Note + Understanding',C.pattern),s('1–3','Pattern 4 Note + Understanding',C.pattern),s('3–4','Lunch',C.lunch),...stdEnd,s('9–11','Pattern 5 Note + Understanding',C.pattern)]},
+    {name:'Thursday',date:'23 Jul',slots:[s('5–6','Refresh',C.refresh),s('6–8','Pattern 6 Note + Understanding',C.pattern),s('8–9','Refresh',C.refresh),s('9–11','Pattern 7 Note + Understanding',C.pattern),s('11–1','Pattern 8 Note + Understanding',C.pattern),s('1–3','Pattern 9 Note + Understanding',C.pattern),s('3–4','Lunch',C.lunch),...stdEnd,s('9–11','Pattern 10 Note + Understanding',C.pattern)]},
+    {name:'Friday',date:'24 Jul',slots:[s('5–6','Refresh',C.refresh),s('6–8','Pattern 11 Note + Understanding',C.pattern),s('8–9','Refresh',C.refresh),s('9–1','Pattern 12 Note + Understanding',C.pattern),s('1–3','Pattern 13 Note + Understanding',C.pattern),s('3–4','Lunch',C.lunch),...stdEnd,s('9–11','Pattern 14 Note + Understanding',C.pattern)]},
+    {name:'Saturday',date:'25 Jul',slots:[s('5–6','Refresh',C.refresh),s('6–8','Pattern 15 Note + Understanding',C.pattern),s('8–9','Refresh',C.refresh),s('9–11','Pattern Full Revision',C.revision),s('11–1','Pattern Full Revision',C.revision),s('1–3','Pattern Full Revision',C.revision),s('3–4','Lunch',C.lunch),s('4–5','English Class',C.english),s('5–7','Work for money',C.work),s('7–8','Web class',C.web),s('8–9','Previous web cls notes',C.prevweb),s('9–11','Pattern Full Revision',C.revision)]},
+  ]},
+  {label:'Phase 5',title:'SQL Notes + DSA Practical',dates:'Sun 26 Jul – Thu 30 Jul',color:'#d946ef',icon:'🗃',days:[
+    {name:'Sunday',date:'26 Jul',slots:[s('5–6','Refresh',C.refresh),s('6–8','SQL 1 Note + Understanding',C.sql),s('8–9','Refresh',C.refresh),s('9–11','DSA Practical',C.dsa),s('11–1','DSA Practical',C.dsa),s('1–3','SQL 2 Note + Understanding',C.sql),s('3–4','Lunch',C.lunch),s('4–5','English Class',C.english),s('5–7','Work for money',C.work),s('7–8','Web class',C.web),s('8–9','Previous web cls notes',C.prevweb),s('9–11','SQL 3 Note + Understanding',C.sql)]},
+    {name:'Monday',date:'27 Jul',slots:[s('5–6','Refresh',C.refresh),s('6–8','SQL 4 Note + Understanding',C.sql),s('8–9','Refresh',C.refresh),s('9–11','DSA Practical',C.dsa),s('11–1','DSA Practical',C.dsa),s('1–3','SQL 5 Note + Understanding',C.sql),s('3–4','Lunch',C.lunch),...stdEnd,s('9–11','SQL 6 Note + Understanding',C.sql)]},
+    {name:'Tuesday',date:'28 Jul',slots:[s('5–6','Refresh',C.refresh),s('6–8','SQL 7 Note + Understanding',C.sql),s('8–9','Refresh',C.refresh),s('9–11','DSA Practical',C.dsa),s('11–1','DSA Practical',C.dsa),s('1–3','SQL 8 Note + Understanding',C.sql),s('3–4','Lunch',C.lunch),...stdEnd,s('9–11','SQL 9 Note + Understanding',C.sql)]},
+    {name:'Wednesday',date:'29 Jul',slots:[s('5–6','Refresh',C.refresh),s('6–8','SQL 10 Note + Understanding',C.sql),s('8–9','Refresh',C.refresh),s('9–11','DSA Practical',C.dsa),s('11–1','DSA Practical',C.dsa),s('1–3','SQL 11 Note + Understanding',C.sql),s('3–4','Lunch',C.lunch),...stdEnd,s('9–11','SQL 12 Note + Understanding',C.sql)]},
+    {name:'Thursday',date:'30 Jul',slots:[s('5–6','Refresh',C.refresh),s('6–8','SQL 13 Note + Understanding',C.sql),s('8–9','Refresh',C.refresh),s('9–11','DSA Practical',C.dsa),s('11–1','DSA Practical',C.dsa),s('1–3','SQL 14 Note + Understanding',C.sql),s('3–4','Lunch',C.lunch),...stdEnd,s('9–11','SQL 15 Note + Understanding',C.sql)]},
+  ]},
+];
+
+// STATE
+let state=JSON.parse(localStorage.getItem('ttState2')||'{}');
+const streakData=JSON.parse(localStorage.getItem('ttStreak')||'{"days":[],"count":0}');
+let ghToken=localStorage.getItem('ttGhToken')||'';
+let ghGistId=localStorage.getItem('ttGistId')||'';
+let autoSync=localStorage.getItem('ttAutoSync')==='true';
+let syncTimer=null,isSyncing=false;
+
+function saveState(){
+  localStorage.setItem('ttState2',JSON.stringify(state));
+  if(autoSync&&ghToken&&ghGistId)schedulePush();
+}
+function schedulePush(){
+  clearTimeout(syncTimer);
+  setSyncStatus('syncing');
+  syncTimer=setTimeout(()=>pushBackup(false),2000);
+}
+
+// SYNC PILL
+function setSyncStatus(status,msg){
+  const pill=document.getElementById('syncPill'),dot=document.getElementById('syncDot'),lbl=document.getElementById('syncLabel');
+  pill.className='sync-pill '+status;
+  dot.className='sync-dot'+(status==='syncing'?' pulse':'');
+  const msgs={idle:msg||'Not connected',syncing:'Syncing…',synced:msg||'Synced ✓',error:msg||'Sync error'};
+  lbl.textContent=msgs[status]||msg;
+}
+
+// PROGRESS
+function updateProgress(){
+  let total=0,done=0;
+  phases.forEach((ph,pi)=>{
+    ph.days.forEach((day,di)=>{
+      let dd=0;
+      day.slots.forEach((_,si)=>{total++;if(state[`${pi}-${di}-${si}`]){done++;dd++;}});
+      const card=document.getElementById(`card-${pi}-${di}`);
+      if(!card)return;
+      const pct=Math.round(dd/day.slots.length*100);
+      const pb=card.querySelector('.day-progress-badge'),fill=card.querySelector('.day-mini-fill'),bar=card.querySelector('.day-header-bar');
+      if(pb)pb.textContent=`${dd}/${day.slots.length}`;
+      if(fill)fill.style.width=pct+'%';
+      if(bar)bar.style.width=pct+'%';
+      card.classList.toggle('all-done',dd===day.slots.length&&day.slots.length>0);
+    });
+  });
+  const pct=total?Math.round(done/total*100):0;
+  const ring=document.getElementById('ringProgress');
+  if(ring)ring.style.strokeDashoffset=326.7-(pct/100)*326.7;
+  const rp=document.getElementById('ringPct');if(rp)rp.textContent=pct+'%';
+  const ri=document.getElementById('ringInfo');if(ri)ri.textContent=`${done} / ${total} tasks`;
+}
+
+// CONFETTI
+function burst(x,y){
+  const cols=['#4f8ef7','#00e5a0','#9b6dff','#ffc94a','#ff5fa0','#00d4ff'];
+  for(let i=0;i<16;i++){
+    const p=document.createElement('div');p.className='confetti-particle';
+    p.style.cssText=`left:${x+(Math.random()-.5)*60}px;top:${y}px;background:${cols[Math.floor(Math.random()*cols.length)]}`;
+    document.body.appendChild(p);setTimeout(()=>p.remove(),1300);
+  }
+}
+
+// RENDER
+function render(){
+  const wrap=document.getElementById('schedule');wrap.innerHTML='';
+  phases.forEach((ph,pi)=>{
+    const phHdr=document.createElement('div');phHdr.className='phase-header';
+    phHdr.innerHTML=`<div><div class="phase-badge" style="color:${ph.color};border-color:${ph.color}30;background:${ph.color}0f">${ph.icon} ${ph.label}</div><div class="phase-title">${ph.title}</div><div class="phase-dates">${ph.dates}</div></div><div class="phase-stats"><div class="phase-stat"><span class="phase-stat-num" style="color:${ph.color}">${ph.days.length}</span><div class="phase-stat-lbl">Days</div></div><div class="phase-stat"><span class="phase-stat-num" style="color:${ph.color}">${ph.days.reduce((a,d)=>a+d.slots.length,0)}</span><div class="phase-stat-lbl">Tasks</div></div></div>`;
+    wrap.appendChild(phHdr);
+    const grid=document.createElement('div');grid.className='days-grid';
+    ph.days.forEach((day,di)=>{
+      const dc=day.slots.filter((_,si)=>state[`${pi}-${di}-${si}`]).length;
+      const pct=Math.round(dc/day.slots.length*100);
+      const card=document.createElement('div');
+      card.className='day-card'+(dc===day.slots.length?' all-done':'');card.id=`card-${pi}-${di}`;card.style.animationDelay=(di*.07)+'s';
+      card.innerHTML=`<div class="day-header"><div><div class="day-name">${day.name} ${dc===day.slots.length?'✅':''}</div><div class="day-date">${day.date}</div></div><div class="day-right"><div class="day-progress-badge">${dc}/${day.slots.length}</div><div class="day-mini-bar"><div class="day-mini-fill" style="background:${ph.color};width:${pct}%"></div></div></div><div class="day-header-bar" style="background:${ph.color};width:${pct}%"></div></div><div class="slots" id="slots-${pi}-${di}"></div><button class="complete-all-btn" onclick="completeDay(${pi},${di},this)">Mark All Complete</button>`;
+      const slotsDiv=card.querySelector(`#slots-${pi}-${di}`);
+      day.slots.forEach((sl,si)=>{
+        const id=`${pi}-${di}-${si}`,done=!!state[id];
+        const el=document.createElement('div');el.className='slot'+(done?' done':'');
+        el.innerHTML=`<span class="slot-time">${sl.time}</span><div class="slot-bar" style="background:var(--${sl.cat})"></div><span class="slot-label">${sl.label}</span><div class="slot-tick" style="font-size:${done?'11px':'0'}">${done?'✓':''}</div>`;
+        el.addEventListener('click',e=>{
+          const isDone=el.classList.toggle('done');state[id]=isDone;
+          const tick=el.querySelector('.slot-tick');tick.textContent=isDone?'✓':'';tick.style.fontSize=isDone?'11px':'0';
+          saveState();updateProgress();if(isDone)burst(e.clientX,e.clientY);
+        });
+        slotsDiv.appendChild(el);
+      });
+      grid.appendChild(card);
+    });
+    wrap.appendChild(grid);
+    if(pi<phases.length-1){const sep=document.createElement('div');sep.className='phase-sep';wrap.appendChild(sep);}
+  });
+  updateProgress();
+}
+
+function completeDay(pi,di,btn){
+  const day=phases[pi].days[di];
+  day.slots.forEach((_,si)=>{state[`${pi}-${di}-${si}`]=true;});
+  saveState();
+  const card=document.getElementById(`card-${pi}-${di}`);
+  card.querySelectorAll('.slot').forEach(el=>{el.classList.add('done');const t=el.querySelector('.slot-tick');t.textContent='✓';t.style.fontSize='11px';});
+  updateProgress();burst(btn.getBoundingClientRect().left+60,btn.getBoundingClientRect().top);
+}
+
+// TABS
+function switchTab(id){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  ['schedule','techstack','analytics','backup'].forEach((t,i)=>{if(t===id)document.querySelectorAll('.nav-tab')[i].classList.add('active');});
+  if(id==='analytics'){initCharts();animateBars();}
+}
+
+// CHARTS
+let chartsInit=false;
+function initCharts(){
+  if(chartsInit)return;chartsInit=true;
+  new Chart(document.getElementById('donutChart').getContext('2d'),{type:'doughnut',data:{labels:['Core Study','Work','Refresh','Sleep','Web Class','Prev Notes','Lunch','English'],datasets:[{data:[8,3,2,6,1,1,1,1],backgroundColor:['#4f8ef7','#ff8c42','#22d3ee','#334155','#9b6dff','#6d4fff','#fbbf24','#ff5fa0'],borderWidth:0,hoverOffset:6}]},options:{responsive:true,cutout:'65%',plugins:{legend:{position:'bottom',labels:{color:'#8899bb',font:{size:11},boxWidth:12,padding:10}},tooltip:{callbacks:{label:c=>` ${c.label}: ${c.parsed}h`}}}}});
+  new Chart(document.getElementById('barChart').getContext('2d'),{type:'bar',data:{labels:['Java','Math/DSA','DSA','Patterns','SQL'],datasets:[{label:'Days',data:[8,4,10,4,5],backgroundColor:['#4f8ef7','#00d4ff','#00e5a0','#ff5252','#d946ef'],borderRadius:8,borderSkipped:false}]},options:{responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.parsed.y} days`}}},scales:{x:{ticks:{color:'#8899bb',font:{size:11}},grid:{color:'#1a2035'}},y:{ticks:{color:'#8899bb',font:{size:11},stepSize:2},grid:{color:'#1a2035'}}}}});
+}
+function animateBars(){setTimeout(()=>{document.querySelectorAll('.hbar-fill').forEach(el=>{el.style.width=el.dataset.w+'%';});},100);}
+
+// STREAK
+function updateStreak(){
+  const today=new Date().toDateString();
+  if(!streakData.days.includes(today)){streakData.days.push(today);streakData.count++;localStorage.setItem('ttStreak',JSON.stringify(streakData));}
+  document.getElementById('streakVal').textContent=streakData.count;
+}
+
+// RESET — local only, GitHub backup untouched
+function confirmReset(){
+  if(confirm('Reset local progress?\n\n✅ Your GitHub backup is SAFE.\nUse "Restore from Gist" in the Backup tab to recover everything instantly.')){
+    Object.keys(state).forEach(k=>delete state[k]);
+    localStorage.setItem('ttState2',JSON.stringify(state));
+    render();
+    setSyncStatus('idle',ghToken&&ghGistId?'Backup safe on GitHub':'Not connected');
+  }
+}
+
+function confirmResetWithBackup(){
+  if(confirm('This resets local progress AND overwrites your GitHub backup with empty data.\n\nAre you 100% sure?')){
+    Object.keys(state).forEach(k=>delete state[k]);
+    localStorage.setItem('ttState2',JSON.stringify(state));
+    render();pushBackup(true);
+  }
+}
+
+// GITHUB GIST
+function setGhStatus(msg,cls){
+  const el=document.getElementById('ghStatus');if(!el)return;
+  el.textContent=msg;el.className='gh-status-box'+(cls?' '+cls:'');
+}
+
+async function pushBackup(manual=false){
+  if(!ghToken){if(manual)setGhStatus('Enter your GitHub token first.','err');return;}
+  if(isSyncing&&!manual)return;
+  isSyncing=true;setSyncStatus('syncing');
+  if(manual)setGhStatus('Pushing to GitHub…');
+  const payload={state,streakData,savedAt:new Date().toISOString(),version:2};
+  const body={description:'Dev Roadmap Tracker — Auto Backup',public:false,files:{'roadmap-backup.json':{content:JSON.stringify(payload,null,2)}}};
+  try{
+    let res;
+    if(ghGistId){res=await fetch(`https://api.github.com/gists/${ghGistId}`,{method:'PATCH',headers:{'Authorization':`token ${ghToken}`,'Content-Type':'application/json'},body:JSON.stringify(body)});}
+    else{res=await fetch('https://api.github.com/gists',{method:'POST',headers:{'Authorization':`token ${ghToken}`,'Content-Type':'application/json'},body:JSON.stringify(body)});}
+    if(!res.ok)throw new Error(`GitHub ${res.status}: ${(await res.text()).slice(0,100)}`);
+    const data=await res.json();
+    ghGistId=data.id;localStorage.setItem('ttGistId',ghGistId);localStorage.setItem('ttLastSync',new Date().toLocaleString());
+    const gistEl=document.getElementById('ghGistId');if(gistEl&&!gistEl.value)gistEl.value=ghGistId;
+    showGistId(ghGistId);
+    const t=new Date().toLocaleTimeString();
+    setSyncStatus('synced',`Synced ${t}`);
+    if(manual)setGhStatus(`✓ Pushed at ${t}  |  Gist: ${ghGistId}`,'ok');
+    isSyncing=false;
+  }catch(err){setSyncStatus('error','Sync failed');if(manual)setGhStatus('✗ '+err.message,'err');isSyncing=false;}
+}
+
+async function restoreBackup(){
+  if(!ghToken){setGhStatus('Enter your GitHub token first.','err');return;}
+  const gistId=document.getElementById('ghGistId').value.trim()||ghGistId;
+  if(!gistId){setGhStatus('No Gist ID — push a backup first, or paste your Gist ID above.','err');return;}
+  setSyncStatus('syncing');setGhStatus('Fetching from GitHub…');
+  try{
+    const res=await fetch(`https://api.github.com/gists/${gistId}`,{headers:{'Authorization':`token ${ghToken}`}});
+    if(!res.ok)throw new Error(`GitHub ${res.status}: ${(await res.text()).slice(0,100)}`);
+    const data=await res.json();
+    const file=data.files['roadmap-backup.json'];if(!file)throw new Error('Backup file not found in this Gist.');
+    const parsed=JSON.parse(file.content);
+    Object.keys(state).forEach(k=>delete state[k]);Object.assign(state,parsed.state||{});
+    if(parsed.streakData){streakData.days=parsed.streakData.days||[];streakData.count=parsed.streakData.count||0;}
+    localStorage.setItem('ttState2',JSON.stringify(state));localStorage.setItem('ttStreak',JSON.stringify(streakData));
+    ghGistId=gistId;localStorage.setItem('ttGistId',gistId);
+    document.getElementById('ghGistId').value=gistId;document.getElementById('streakVal').textContent=streakData.count;
+    showGistId(gistId);render();
+    const savedAt=parsed.savedAt?new Date(parsed.savedAt).toLocaleString():'unknown';
+    setSyncStatus('synced','Restored ✓');setGhStatus(`✓ Restored ${Object.keys(parsed.state||{}).length} entries from backup saved at ${savedAt}`,'ok');
+    const banner=document.getElementById('restoreBanner');
+    document.getElementById('restoreBannerText').textContent=`☁ Progress restored from GitHub (saved ${savedAt})`;
+    banner.classList.add('show');switchTab('schedule');
+  }catch(err){setSyncStatus('error','Restore failed');setGhStatus('✗ '+err.message,'err');}
+}
+
+function showGistId(id){
+  const sec=document.getElementById('gistIdSection'),disp=document.getElementById('gistIdDisplay');
+  if(sec&&disp&&id){sec.style.display='block';disp.textContent=id;}
+}
+function copyGistId(){
+  navigator.clipboard.writeText(ghGistId).then(()=>{
+    const d=document.getElementById('gistIdDisplay'),orig=d.textContent;
+    d.textContent='✓ Copied to clipboard!';setTimeout(()=>{d.textContent=orig;},1500);
+  });
+}
+
+// INPUT HANDLERS
+function onTokenInput(){ghToken=document.getElementById('ghToken').value.trim();localStorage.setItem('ttGhToken',ghToken);updateSyncPillFromSettings();}
+function onGistIdInput(){ghGistId=document.getElementById('ghGistId').value.trim();localStorage.setItem('ttGistId',ghGistId);if(ghGistId)showGistId(ghGistId);updateSyncPillFromSettings();}
+function onAutoSyncChange(){
+  autoSync=document.getElementById('autoSyncToggle').checked;
+  if(autoSync&&!ghToken){setGhStatus('Enter your GitHub token to use Auto-Sync.','err');document.getElementById('autoSyncToggle').checked=false;autoSync=false;return;}
+  localStorage.setItem('ttAutoSync',autoSync);updateSyncPillFromSettings();
+  if(autoSync)setGhStatus('Auto-Sync enabled — every tick will be saved to GitHub automatically.');
+}
+function updateSyncPillFromSettings(){
+  if(!ghToken){setSyncStatus('idle','Not connected');return;}
+  if(autoSync&&ghGistId){setSyncStatus('synced','Auto-Sync ON');return;}
+  if(ghGistId){setSyncStatus('idle','Manual mode');return;}
+  setSyncStatus('idle','Token ready');
+}
+function loadGhSettings(){
+  const te=document.getElementById('ghToken'),ge=document.getElementById('ghGistId'),tog=document.getElementById('autoSyncToggle');
+  if(te&&ghToken)te.value=ghToken;if(ge&&ghGistId){ge.value=ghGistId;showGistId(ghGistId);}
+  if(tog)tog.checked=autoSync;updateSyncPillFromSettings();
+  const ls=localStorage.getItem('ttLastSync');if(ls)setGhStatus(`Last synced: ${ls}`);
+}
+
+// AUTO-RESTORE ON PAGE LOAD
+async function tryAutoRestore(){
+  if(!ghToken||!ghGistId||!autoSync)return;
+  try{
+    setSyncStatus('syncing');
+    const res=await fetch(`https://api.github.com/gists/${ghGistId}`,{headers:{'Authorization':`token ${ghToken}`}});
+    if(!res.ok)throw new Error('fetch failed');
+    const data=await res.json();const file=data.files['roadmap-backup.json'];
+    if(!file)throw new Error('no file');
+    const parsed=JSON.parse(file.content);
+    const remoteKeys=Object.keys(parsed.state||{}).length,localKeys=Object.keys(state).length;
+    if(remoteKeys>localKeys){
+      Object.keys(state).forEach(k=>delete state[k]);Object.assign(state,parsed.state||{});
+      if(parsed.streakData){streakData.days=parsed.streakData.days||[];streakData.count=parsed.streakData.count||0;}
+      localStorage.setItem('ttState2',JSON.stringify(state));localStorage.setItem('ttStreak',JSON.stringify(streakData));
+      document.getElementById('streakVal').textContent=streakData.count;render();
+      const savedAt=parsed.savedAt?new Date(parsed.savedAt).toLocaleString():'GitHub';
+      const banner=document.getElementById('restoreBanner');
+      document.getElementById('restoreBannerText').textContent=`☁ Auto-restored ${remoteKeys} tasks from GitHub (saved ${savedAt})`;
+      banner.classList.add('show');
+    }
+    setSyncStatus('synced',`Synced ${new Date().toLocaleTimeString()}`);
+  }catch(_){setSyncStatus('idle',ghGistId?'Auto-sync ready':'Not connected');}
+}
+
+// SCROLL TOP
+window.addEventListener('scroll',()=>{document.getElementById('scrollTop').classList.toggle('show',window.scrollY>400);});
+
+// INIT
+render();updateStreak();loadGhSettings();tryAutoRestore();
+</script>
+</body>
+</html>
